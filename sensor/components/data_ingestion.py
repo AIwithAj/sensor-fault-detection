@@ -6,13 +6,14 @@ from sklearn.model_selection import train_test_split
 import os,sys
 from pandas import DataFrame
 from sensor.data_access.sensor_data import SensorData
-
+from sensor.utils.main_utils import read_yaml_file
+from sensor.constant.training_pipeline import SCHEMA_FILE_PATH
 class DataIngestion:
 
     def __init__(self,data_ingestion_config:DataIngestionConfig):
         try:
             self.data_ingestion_config=data_ingestion_config
-      
+            self._schema_config = read_yaml_file(SCHEMA_FILE_PATH)
         except Exception as e:
             raise SensorException(e,sys)
 
