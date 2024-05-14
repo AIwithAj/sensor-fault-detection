@@ -21,8 +21,6 @@ class TrainPipeline:
         self.training_pipeline_config = TrainingPipelineConfig()
         self.s3_sync = S3Sync()
         
-
-
     def start_data_ingestion(self)->DataIngestionArtifact:
         try:
             self.data_ingestion_config = DataIngestionConfig(training_pipeline_config=self.training_pipeline_config)
@@ -119,3 +117,8 @@ class TrainPipeline:
             self.sync_artifact_dir_to_s3()
             TrainPipeline.is_pipeline_running=False
             raise  SensorException(e,sys)
+
+
+# if __name__=='__main__':
+#     tp=TrainPipeline()
+#     tp.run_pipeline()

@@ -1,0 +1,48 @@
+stages:
+  stage_01_data_ingestion:
+    cmd: python sensor\pipeline\stage_01_data_ingestion.py
+    deps:
+      - sensor\pipeline\stage_01_data_ingestion.py
+    outs:
+      - data_ingestion_artifact.json
+
+  stage_02_data_validation:
+    cmd: python sensor\pipeline\stage_02_data_validation.py
+    deps:
+      - sensor\pipeline\stage_02_data_validation.py
+      - data_ingestion_artifact.json
+    outs:
+      - data_validation_artifact.json
+
+  stage_03_data_transformation:
+    cmd: python sensor\pipeline\stage_03_data_transformation.py
+    deps:
+      - sensor\pipeline\stage_03_data_transformation.py
+      - data_validation_artifact.json
+    outs:
+      - data_transformation_artifact.json
+
+  stage_04_model_trainer:
+    cmd: python sensor\pipeline\stage_04_model_trainer.py
+    deps:
+      - sensor\pipeline\stage_04_model_trainer.py
+      - data_transformation_artifact.json
+    outs:
+      - model_trainer_artifact.json
+
+  stage_05_model_evaluation:
+    cmd: python sensor\pipeline\stage_05_model_evaluation.py
+    deps:
+      - sensor\pipeline\stage_05_model_evaluation.py
+      - data_validation_artifact.json
+      - model_trainer_artifact.json
+    outs:
+      - model_eval_artifact.json
+
+  stage_06_model_pusher:
+    cmd: python sensor\pipeline\stage_06_model_pusher.py
+    deps:
+      - sensor\pipeline\stage_06_model_pusher.py
+      - model_eval_artifact.json
+    outs:
+      - model_pusher_artifact.json

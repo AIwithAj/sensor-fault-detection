@@ -9,6 +9,7 @@ from xgboost import XGBClassifier
 from sensor.ml.metric.classification_metric import get_classification_score
 from sensor.ml.model.estimator import SensorModel
 from sensor.utils.main_utils import save_object,load_object
+import wandb
 class ModelTrainer:
 
     def __init__(self,model_trainer_config:ModelTrainerConfig,
@@ -22,12 +23,30 @@ class ModelTrainer:
     def perform_hyper_paramter_tunig(self):...
     
 
-    def train_model(self,x_train,y_train):
+    def train_model(self, x_train, y_train, x_test, y_test):
         try:
+            wandb.login(relogin=True)
+
+            runs=wandb.init(project="evaluation matrics")
+            # Initialize XGBoost classifier
             xgb_clf = XGBClassifier()
-            xgb_clf.fit(x_train,y_train)
+            
+            # Train the classifier
+            xgb_clf.fit(x_train, y_train)
+            logging.info("Xgb fit completed")
+            # Obtain predictions and probabilities on the test set
+            y_pred = xgb_clf.predict(x_test)
+            probas = xgb_clf.predict_proba(x_test)
+            
+            # Log model and evaluation metrics to Weights & Biases
+            # wandb.sklearn.plot_classifier(xgb_clf, x_train, x_test, y_train=y_train, y_test=y_test, y_pred=y_pred, probas=y_probas, labels=['pos','neg'], model_name='XGBoost')
+            wandb.sklearn.plot_classifier(xgb_clf, x_train, x_test, y_train=y_train, y_test=y_test, y_pred=y_pred, y_probas=probas, labels=[0, 1], model_name='XGBoost')
+            logging.info("sucefully tracking done..")
+            wandb.finish()
+            # Return the trained model
             return xgb_clf
         except Exception as e:
+            # If any error occurs during training, raise the exception
             raise e
     
     def initiate_model_trainer(self)->ModelTrainerArtifact:
@@ -45,8 +64,9 @@ class ModelTrainer:
                 test_arr[:, :-1],
                 test_arr[:, -1],
             )
+            print("printitng... shape",x_train.shape,y_train.shape,x_test.shape,y_test.shape)
 
-            model = self.train_model(x_train, y_train)
+            model = self.train_model(x_train, y_train,x_test,y_test)
             y_train_pred = model.predict(x_train)
             classification_train_metric =  get_classification_score(y_true=y_train, y_pred=y_train_pred)
             

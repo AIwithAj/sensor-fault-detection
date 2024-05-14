@@ -1,0 +1,16 @@
+{
+    "is_model_accepted": false,
+    "improved_accuracy": 0.006152573646370008,
+    "best_model_path": "saved_models\\1715440061\\model.pkl",
+    "trained_model_path": "artifact\\05_14_2024_19_39_32\\model_trainer\\trained_model\\model.pkl",
+    "train_model_metric_artifact": {
+        "f1_score": 0.9598014888337467,
+        "precision_score": 0.9527093596059113,
+        "recall_score": 0.967
+    },
+    "best_model_metric_artifact": {
+        "f1_score": 0.9536489151873767,
+        "precision_score": 0.9406614785992218,
+        "recall_score": 0.967
+    }
+}

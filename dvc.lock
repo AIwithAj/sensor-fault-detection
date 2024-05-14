@@ -1,0 +1,82 @@
+schema: '2.0'
+stages:
+  stage_01_data_ingestion:
+    cmd: python sensor\pipeline\stage_01_data_ingestion.py
+    deps:
+    - path: sensor\pipeline\stage_01_data_ingestion.py
+      hash: md5
+      md5: be1702a29293ad388d2df87b756b853c
+      size: 984
+    outs:
+    - path: data_ingestion_artifact.json
+      hash: md5
+      md5: fce9a2d92516822766b51af5231a60f3
+      size: 178
+  stage_02_data_validation:
+    cmd: python sensor\pipeline\stage_02_data_validation.py
+    deps:
+    - path: data_ingestion_artifact.json
+      hash: md5
+      md5: fce9a2d92516822766b51af5231a60f3
+      size: 178
+    - path: sensor\pipeline\stage_02_data_validation.py
+      hash: md5
+      md5: 3694f06f4a5963077cd563f32180b884
+      size: 1822
+    outs:
+    - path: data_validation_artifact.json
+      hash: md5
+      md5: 5de25abc1eb904c802e15f2d949315af
+      size: 384
+  stage_03_data_transformation:
+    cmd: python sensor\pipeline\stage_03_data_transformation.py
+    deps:
+    - path: data_validation_artifact.json
+      hash: md5
+      md5: 5de25abc1eb904c802e15f2d949315af
+      size: 384
+    - path: sensor\pipeline\stage_03_data_transformation.py
+      hash: md5
+      md5: ae6651ddf970302842dde28614791c45
+      size: 1976
+    outs:
+    - path: data_transformation_artifact.json
+      hash: md5
+      md5: 025a1b19e148ab894deb3f5b06072a16
+      size: 341
+  stage_04_model_trainer:
+    cmd: python sensor\pipeline\stage_04_model_trainer.py
+    deps:
+    - path: data_transformation_artifact.json
+      hash: md5
+      md5: 025a1b19e148ab894deb3f5b06072a16
+      size: 341
+    - path: sensor\pipeline\stage_04_model_trainer.py
+      hash: md5
+      md5: 21e15199f0fd285aaea9b3df7ebd37dd
+      size: 2643
+    outs:
+    - path: model_trainer_artifact.json
+      hash: md5
+      md5: a7bd77b0070dae24c00d25b45165476f
+      size: 322
+  stage_05_model_evaluation:
+    cmd: python sensor\pipeline\stage_05_model_evaluation.py
+    deps:
+    - path: data_validation_artifact.json
+      hash: md5
+      md5: 5de25abc1eb904c802e15f2d949315af
+      size: 384
+    - path: model_trainer_artifact.json
+      hash: md5
+      md5: a7bd77b0070dae24c00d25b45165476f
+      size: 322
+    - path: sensor\pipeline\stage_05_model_evaluation.py
+      hash: md5
+      md5: 6b9ac52295a859bddb1e93cfddc72742
+      size: 3342
+    outs:
+    - path: model_eval_artifact.json
+      hash: md5
+      md5: 14a8edc7af86d3d630a29578a1aba013
+      size: 579
